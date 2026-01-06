@@ -442,8 +442,8 @@
                 <div id="diag-content">
                     <div class="diag-question" id="diag-question">今の電話番号をそのまま使い続けたいですか？</div>
                     <div class="diag-options" id="diag-options-container">
-                        <button class="diag-btn primary" onclick="answer('yes')">はい</button>
-                        <button class="diag-btn" onclick="answer('no')">いいえ（新しくてもOK）</button>
+                        <button class="diag-btn primary" onclick="answer('yes', event)">はい</button>
+                        <button class="diag-btn" onclick="answer('no', event)">いいえ（新しくてもOK）</button>
                     </div>
                 </div>
 
@@ -686,18 +686,18 @@
             {
                 text: "その番号はいつ作りましたか？",
                 yes: 2, // Check volume next
-                no: 3, // Hikari born, check volume next
+                no: 2, // Check volume next
                 btnYes: "ネットを引く前(アナログ)",
                 btnNo: "光回線と同時(ひかり)",
                 unknown: 2
             },
             {
                 text: "1日の電話件数はどのくらいですか？",
-                yes: 4, // Manual check volume
-                no: 4,
+                yes: 3,
+                no: 3,
                 btnYes: "10件以上(多め)",
                 btnNo: "10件未満(少なめ)",
-                unknown: 4
+                unknown: 3
             },
             {
                 text: "社内にネットワーク設定ができるスタッフはいますか？",
@@ -727,27 +727,35 @@
         let currentStep = 0;
         let userAnswers = {};
 
-        function answer(choice) {
-            const q = questions[currentStep];
-            userAnswers[currentStep] = choice;
+        function answer(choice, event) {
+            try {
+                const q = questions[currentStep];
+                userAnswers[currentStep] = choice;
 
-            let next;
-            if (choice === 'yes') next = q.yes;
-            else if (choice === 'no') next = q.no;
-            else next = q.unknown;
+                let next;
+                if (choice === 'yes') next = q.yes;
+                else if (choice === 'no') next = q.no;
+                else next = q.unknown;
 
-            // Add simple sparkle effect
-            const btn = event.currentTarget;
-            createSparkles(btn.offsetLeft + btn.offsetWidth / 2, btn.offsetTop + btn.offsetHeight / 2);
+                // Safe sparkle effect
+                if (event && event.currentTarget) {
+                    try {
+                        const btn = event.currentTarget;
+                        createSparkles(btn.offsetLeft + btn.offsetWidth / 2, btn.offsetTop + btn.offsetHeight / 2);
+                    } catch (e) { console.error("Sparkle error:", e); }
+                }
 
-            if (typeof next === 'string') {
-                // Determine final pattern based on path if needed
-                let finalPattern = getAdvancedResult(next);
-
-                showResult(finalPattern);
-            } else {
-                currentStep = next;
-                updateQuestion();
+                if (typeof next === 'string') {
+                    const finalPattern = getAdvancedResult(next);
+                    showResult(finalPattern);
+                } else if (next !== undefined && questions[next]) {
+                    currentStep = next;
+                    updateQuestion();
+                } else {
+                    console.error("Invalid next step:", next);
+                }
+            } catch (err) {
+                console.error("Answer error:", err);
             }
         }
 
@@ -767,41 +775,51 @@
         }
 
         function updateQuestion() {
-            const q = questions[currentStep];
-            const content = document.getElementById('diag-content');
-            content.style.opacity = '0';
+            try {
+                const q = questions[currentStep];
+                const content = document.getElementById('diag-content');
+                if (!content) return;
 
-            setTimeout(() => {
-                document.getElementById('diag-question').innerText = q.text;
-                const container = document.querySelector('.diag-options'); // Changed to use existing class
-                container.innerHTML = '';
+                content.style.opacity = '0';
 
-                // Create Yes Button
-                const btnYes = document.createElement('button');
-                btnYes.className = 'diag-btn primary';
-                btnYes.innerText = q.btnYes || "はい";
-                btnYes.onclick = (e) => answer('yes');
-                container.appendChild(btnYes);
+                setTimeout(() => {
+                    const questionEl = document.getElementById('diag-question');
+                    if (questionEl) questionEl.innerText = q.text;
 
-                // Create No Button
-                const btnNo = document.createElement('button');
-                btnNo.className = 'diag-btn';
-                btnNo.innerText = q.btnNo || "いいえ";
-                btnNo.onclick = (e) => answer('no');
-                container.appendChild(btnNo);
+                    const container = document.getElementById('diag-options-container');
+                    if (!container) return;
 
-                // Create Unknown Button if applicable
-                if (q.unknown) {
-                    const btnUnk = document.createElement('button');
-                    btnUnk.className = 'diag-btn unknown';
-                    btnUnk.innerText = "わからない";
-                    btnUnk.onclick = (e) => answer('unknown');
-                    container.appendChild(btnUnk);
-                }
+                    container.innerHTML = '';
 
-                content.style.opacity = '1';
-                content.className = 'animate__animated animate__fadeInRight';
-            }, 300);
+                    // Create Yes Button
+                    const btnYes = document.createElement('button');
+                    btnYes.className = 'diag-btn primary';
+                    btnYes.innerText = q.btnYes || "はい";
+                    btnYes.onclick = function (e) { answer('yes', e); };
+                    container.appendChild(btnYes);
+
+                    // Create No Button
+                    const btnNo = document.createElement('button');
+                    btnNo.className = 'diag-btn';
+                    btnNo.innerText = q.btnNo || "いいえ";
+                    btnNo.onclick = function (e) { answer('no', e); };
+                    container.appendChild(btnNo);
+
+                    // Create Unknown Button if applicable
+                    if (q.unknown !== undefined) {
+                        const btnUnk = document.createElement('button');
+                        btnUnk.className = 'diag-btn unknown';
+                        btnUnk.innerText = "わからない";
+                        btnUnk.onclick = function (e) { answer('unknown', e); };
+                        container.appendChild(btnUnk);
+                    }
+
+                    content.style.opacity = '1';
+                    content.className = 'animate__animated animate__fadeInRight';
+                }, 300);
+            } catch (err) {
+                console.error("UpdateQuestion error:", err);
+            }
         }
 
         function showResult(pattern) {
