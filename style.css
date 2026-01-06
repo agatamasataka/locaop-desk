@@ -672,6 +672,47 @@ img {
     background: var(--primary);
 }
 
+
+/* Audio Section */
+.section-audio {
+    padding-top: 1rem;
+    padding-bottom: 4rem;
+    position: relative;
+    z-index: 10;
+}
+
+.audio-box {
+    max-width: 600px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.audio-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--bg-light-teal);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.promo-audio {
+    width: 100%;
+    height: 35px;
+    outline: none;
+}
+
 /* Pricing Page Styles */
 .pricing-hero {
     padding: 120px 0 60px;
