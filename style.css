@@ -218,6 +218,24 @@ img {
     flex: 1;
 }
 
+.trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(29, 149, 212, 0.1);
+    color: var(--primary);
+    padding: 0.5rem 1.2rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(29, 149, 212, 0.2);
+}
+
+.trust-badge i {
+    font-size: 1.1rem;
+}
+
 .hero-title {
     font-size: 3rem;
     margin-bottom: 1.5rem;
@@ -654,43 +672,147 @@ img {
     background: var(--primary);
 }
 
-/* Audio Section */
-.section-audio {
-    padding-bottom: 4rem;
-    position: relative;
-    z-index: 10;
+/* Pricing Page Styles */
+.pricing-hero {
+    padding: 120px 0 60px;
+    background: linear-gradient(135deg, #f8fdff 0%, #eaf8f8 100%);
+    text-align: center;
 }
 
-.audio-box {
-    max-width: 600px;
-    margin: 0 auto;
-    background: var(--white);
-    padding: 2rem;
-    border-radius: 50px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+.pricing-title {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
 }
 
-.audio-icon {
-    width: 50px;
-    height: 50px;
-    background: var(--bg-light-teal);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--primary);
-    font-size: 1.5rem;
-    flex-shrink: 0;
+.price-table-container {
+    overflow-x: auto;
+    margin-top: 3rem;
 }
 
-.promo-audio {
+.price-table {
     width: 100%;
-    height: 40px;
-    outline: none;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.price-table th,
+.price-table td {
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid #eee;
+}
+
+.price-table th {
+    background: #f9f9f9;
+    font-weight: 700;
+}
+
+.price-table .highlight-col {
+    background: rgba(29, 149, 212, 0.03);
+}
+
+.price-table .locaop-cell {
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.advantage-tag {
+    display: inline-block;
+    background: #FF3B30;
+    color: #fff;
+    padding: 0.2rem 0.8rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 800;
+}
+
+.sim-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.sim-card {
+    background: var(--white);
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.03);
+    border: 1px solid #eee;
+}
+
+.sim-card.locaop {
+    border: 2px solid var(--primary);
+    position: relative;
+    background: rgba(29, 149, 212, 0.02);
+}
+
+.sim-card.locaop::before {
+    content: "オススメ";
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: #fff;
+    padding: 0.3rem 1.5rem;
+    border-radius: 99px;
+    font-weight: 800;
+}
+
+.sim-total {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin: 1.5rem 0;
+}
+
+.sim-total span {
+    color: var(--primary);
+    font-size: 2.5rem;
+}
+
+.highlight-text {
+    background: linear-gradient(transparent 70%, #fff9c4 70%);
+    font-weight: 700;
+}
+
+.benefit-block {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    border-left: 5px solid var(--primary);
+    margin-bottom: 2rem;
+}
+
+.reason-tag {
+    display: inline-block;
+    color: var(--primary);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.pricing-cta {
+    background: linear-gradient(135deg, var(--navy) 0%, #1a3c61 100%);
+    color: #fff;
+    padding: 4rem 0;
+    text-align: center;
+    margin-top: 4rem;
+}
+
+/* Media Queries for Table */
+@media (max-width: 600px) {
+    .price-table {
+        font-size: 0.85rem;
+    }
+
+    .price-table th,
+    .price-table td {
+        padding: 0.8rem 0.5rem;
+    }
 }
 
 /* Media Queries */
