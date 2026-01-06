@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事前環境チェック & 無料診断アプリ | Locaop Desk</title>
+    <meta name="description" content="今の番号は使える？コストは下がる？3秒でわかる無料診断アプリで、あなたに最適な電話DXプランを判定します。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Outfit:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --step-bg: #fff;
+            --trap-bg: #fff0f0;
+            --road-analog: #8d6e63;
+            --road-hikari: #4fc3f7;
+            --road-sip: #9575cd;
+        }
+
+        .guide-body {
+            background-color: #f8fafc;
+        }
+
+        .guide-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+        }
+
+        .guide-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .guide-badge {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .guide-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--navy);
+        }
+
+        .guide-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-light);
+        }
+
+        /* Intro Section */
+        .section-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 1rem;
+        }
+
+        .section-number {
+            font-family: var(--font-en);
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            opacity: 0.3;
+        }
+
+        .section-h {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+
+        /* Infinite Loop Visualization */
+        .trap-box {
+            background: var(--trap-bg);
+            border: 2px dashed #ff6b6b;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .trap-box h4 {
+            color: #d32f2f;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .loop-visual {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .loop-item {
+            text-align: center;
+            z-index: 1;
+        }
+
+        .loop-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--navy);
+        }
+
+        .loop-arrow {
+            font-size: 2rem;
+            color: #ff6b6b;
+            animation: infinite-slide 2s linear infinite;
+        }
+
+        @keyframes infinite-slide {
+            0% {
+                transform: translateX(-10px);
+                opacity: 0;
+            }
+
+            50% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(10px);
+                opacity: 0;
+            }
+        }
+
+        /* Road Visualization */
+        .road-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .road-card {
+            border-radius: 15px;
+            padding: 1.5rem;
+            position: relative;
+            border: 1px solid #eee;
+        }
+
+        .road-card.analog {
+            border-left: 8px solid var(--road-analog);
+        }
+
+        .road-card.hikari {
+            border-left: 8px solid var(--road-hikari);
+        }
+
+        .road-card.sip {
+            border-left: 8px solid var(--road-sip);
+        }
+
+        .road-tag {
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* Diagnosis App Styles (MAIN) */
+        .diagnosis-hero {
+            background: linear-gradient(135deg, #FF9F1C 0%, #FF6000 100%);
+            padding: 6rem 1.5rem;
+            text-align: center;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 4rem;
+        }
+
+        .diagnosis-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.2) 0%, transparent 20%);
+            animation: pulse-bg 10s infinite alternate;
+        }
+
+        @keyframes pulse-bg {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+
+            100% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        .diag-card-wrap {
+            max-width: 700px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 30px;
+            padding: 4rem 3rem;
+            color: var(--navy);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 10;
+        }
+
+        .diag-question {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            font-weight: 800;
+            line-height: 1.4;
+        }
+
+        .diag-options {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .diag-btn {
+            flex: 1;
+            min-width: 180px;
+            background: var(--bg-light);
+            color: var(--navy);
+            border: 2px solid #eee;
+            padding: 1.2rem 1.5rem;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .diag-btn.unknown {
+            background: #f0f0f0;
+            color: var(--text-light);
+        }
+
+        .diag-btn:hover {
+            transform: scale(1.05) translateY(-5px);
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 10px 20px rgba(29, 149, 212, 0.1);
+        }
+
+        .diag-btn.primary {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .diag-btn.primary:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 10px 20px rgba(29, 149, 212, 0.3);
+        }
+
+        .diag-result {
+            display: none;
+            text-align: left;
+        }
+
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            animation: sparkle-anim 0.8s forwards;
+        }
+
+        @keyframes sparkle-anim {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(2) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        .result-shining {
+            animation: shine-result 2s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            background-size: 200% 100%;
+        }
+
+        @keyframes shine-result {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Detail Guide Divider */
+        .detail-divider {
+            text-align: center;
+            margin: 6rem 0 4rem;
+            position: relative;
+        }
+
+        .detail-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e0e0e0;
+            z-index: 1;
+        }
+
+        .detail-divider span {
+            background: #f8fafc;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+            font-weight: 800;
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+
+        /* Pattern Table */
+        .cost-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .cost-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .cost-table th,
+        .cost-table td {
+            border: 1px solid #eee;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .cost-table th {
+            background: #fbfbfb;
+            font-weight: 700;
+        }
+
+        .best-pick {
+            background: #fff9e6;
+            color: #cc8400;
+            font-weight: 800;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .guide-title {
+                font-size: 1.8rem;
+            }
+
+            .section-card {
+                padding: 1.5rem;
+            }
+
+            .diag-options {
+                flex-direction: column;
+            }
+
+            .diag-question {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="guide-body">
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="index.html" class="logo-text">Locaop Desk</a>
+            </div>
+            <nav class="header-nav">
+                <a href="guide.html" class="nav-link">10秒無料診断</a>
+                <a href="index.html#contact" class="btn btn-outline" style="margin-left: 1rem;">お問い合わせ</a>
+                <a href="index.html#trial" class="btn btn-primary">無料で使ってみる</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="diagnosis-hero">
+        <div class="container">
+            <h1 class="animate__animated animate__bounceInDown" style="font-size: 4rem; margin-bottom: 1rem;">10秒無料診断
+            </h1>
+            <p class="animate__animated animate__fadeIn animate__delay-1s"
+                style="font-size: 1.8rem; opacity: 0.9; margin-bottom: 3rem;">3秒でわかる！店舗環境チェック</p>
+
+            <div class="diag-card-wrap animate__animated animate__zoomIn animate__delay-1s">
+                <div id="diag-content">
+                    <div class="diag-question" id="diag-question">今の電話番号をそのまま使い続けたいですか？</div>
+                    <div class="diag-options" id="diag-options-container">
+                        <button class="diag-btn primary" onclick="answer('yes')">はい</button>
+                        <button class="diag-btn" onclick="answer('no')">いいえ（新しくてもOK）</button>
+                    </div>
+                </div>
+
+                <div id="diag-result" class="diag-result">
+                    <div id="loading-mask" style="display:none; text-align:center; padding: 2rem;">
+                        <i class="fa-solid fa-sync fa-spin"
+                            style="font-size: 4rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                        <p style="font-weight: 800;">最適なプランを分析中...</p>
+                    </div>
+                    <div id="result-content" style="display:none;">
+                        <div class="result-pattern" id="result-pattern" style="background: var(--cta-gradient)">パターンC
+                        </div>
+                        <h2 id="result-title" style="margin-bottom: 1.5rem; font-size: 2.2rem;">ナンバーポータビリティ</h2>
+                        <div style="background: #f0f7ff; padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem;">
+                            <p id="result-desc" style="font-weight: 500; line-height: 1.8;"></p>
+                        </div>
+
+                        <!-- Operator Consultation Section -->
+                        <div
+                            style="background: var(--white); border: 2px solid var(--primary); padding: 2rem; border-radius: 20px; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem;">
+                            <div style="flex-shrink: 0; position: relative;">
+                                <img src="operator.png" alt="Operator"
+                                    style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);">
+                                <div
+                                    style="position: absolute; bottom: 0; right: 0; background: #2ecc71; width: 20px; height: 20px; border-radius: 50%; border: 3px solid #fff;">
+                                </div>
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--navy);">専門スタッフがサポートします
+                                </h4>
+                                <p style="font-size: 0.9rem; color: var(--text-light); margin-bottom: 0;">
+                                    回線環境は非常に複雑です。この診断結果をベースに、<b>無料で最適な接続テスト</b>をプロのオペレーターが個別にご案内可能です。</p>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <a href="index.html#trial" class="btn btn-primary btn-lg"
+                                style="flex: 1.2; font-size: 1.1rem;">無料で使ってみる <i
+                                    class="fa-solid fa-chevron-right"></i></a>
+                            <a href="index.html#contact" class="btn btn-outline btn-lg"
+                                style="flex: 1; font-size: 1.1rem;">プロに相談する</a>
+                        </div>
+
+                        <div class="diag-reset" onclick="resetDiag()"
+                            style="text-align: center; color: var(--text-light); cursor: pointer; font-size: 0.9rem; margin-top: 2rem;">
+                            <i class="fa-solid fa-rotate-left"></i> もう一度診断する
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-divider">
+        <span>詳細解説ガイド</span>
+    </div>
+
+    <main class="guide-container" style="padding-top: 0;">
+        <div class="guide-header" style="text-align: left; margin-bottom: 3rem;">
+            <p class="guide-subtitle">「自動音声応答」導入の仕組みと道具を詳しく知る</p>
+        </div>
+
+        <!-- 1. Intro -->
+        <section class="section-card">
+            <div class="section-header">
+                <span class="section-number">01</span>
+                <h2 class="section-h">はじめに：やりたいことと「無限ループの罠」</h2>
+            </div>
+            <p><strong>【やりたいこと】</strong></p>
+            <ul style="list-style: none; padding-left: 0; margin: 1rem 0;">
+                <li><i class="fa-solid fa-check-circle" style="color: var(--primary)"></i> お客さんがいつもの番号（03-xxxx）にかける</li>
+                <li style="margin-left: 1rem">⬇</li>
+                <li><i class="fa-solid fa-check-circle" style="color: var(--primary)"></i> 一度Twilioにつながり、自動音声（IVR）が対応する
+                </li>
+                <li style="margin-left: 1rem">⬇</li>
+                <li><i class="fa-solid fa-check-circle" style="color: var(--primary)"></i> 必要な電話だけ、手元の固定電話機に戻して会話する</li>
+            </ul>
+
+            <div class="trap-box">
+                <h4><i class="fa-solid fa-triangle-exclamation"></i> 最初の罠：無限ループ</h4>
+                <p>単純に「転送」して「送り返す」設定にすると、電話は鳴りません。<br>
+                    「03番号からTwilioへ転送中」に、Twilioから「同じ03番号」へかけると、NTTは「おっ、また転送だな」と判断して再度Twilioへ送ります。これが永遠に繰り返されるのが無限ループです。
+                </p>
+
+                <div class="loop-visual">
+                    <div class="loop-item">
+                        <i class="fa-solid fa-phone loop-icon"></i>
+                        <div>お客様</div>
+                    </div>
+                    <i class="fa-solid fa-arrow-right loop-arrow"></i>
+                    <div class="loop-item">
+                        <i class="fa-solid fa-cloud loop-icon" style="color: var(--primary)"></i>
+                        <div>Twilio (転送)</div>
+                    </div>
+                    <i class="fa-solid fa-arrow-left loop-arrow" style="animation-direction: reverse;"></i>
+                    <div class="loop-item">
+                        <i class="fa-solid fa-building-columns loop-icon"></i>
+                        <div>NTT (無限回し)</div>
+                    </div>
+                </div>
+                <p class="text-center" style="color: #d32f2f; font-weight: 800;">これを回避するために「道具」と「抜け道」の知識が必要になります。</p>
+            </div>
+        </section>
+
+        <!-- 2. Roads -->
+        <section class="section-card">
+            <div class="section-header">
+                <span class="section-number">02</span>
+                <h2 class="section-h">基礎知識：「道路」と「言葉」の違い</h2>
+            </div>
+            <p>電話の世界には、大きく3種類の「通り道」があります。</p>
+
+            <div class="road-grid">
+                <div class="road-card analog">
+                    <span class="road-tag" style="color: var(--road-analog)">① アナログ回線（昔の道）</span>
+                    <p><strong>イメージ:</strong> 銅線でできた細い旧道。<br>
+                        <strong>特徴:</strong> 1本の線で1つの会話しかできません。場所（住所）に縛られます。
+                    </p>
+                </div>
+                <div class="road-card hikari">
+                    <span class="road-tag" style="color: var(--road-hikari)">② ひかり電話（専用高速道路）</span>
+                    <p><strong>イメージ:</strong> NTTが作った専用道路。<br>
+                        <strong>特徴:</strong> デジタルですが、NTTの契約がないと入れない「閉じた道路」です。
+                    </p>
+                </div>
+                <div class="road-card sip">
+                    <span class="road-tag" style="color: var(--road-sip)">③ SIP（インターネットという空の道）</span>
+                    <p><strong>イメージ:</strong> Twilioが住んでいる自由な空の道。<br>
+                        <strong>特徴:</strong> 世界中どこでもつながりますが、家の電話とは「橋渡し」が必要です。
+                    </p>
+                </div>
+            </div>
+
+            <div style="background: #f0f7ff; padding: 1.5rem; border-radius: 10px; margin-top: 2rem;">
+                <h4 style="margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-info"></i> 2024年の「IP網移行」とは？</h4>
+                <p style="font-size: 0.9rem;">
+                    中身はIP技術に変わりましたが、家までの「銅線」や「契約区分」は残っています。そのため、Twilioへ移行できるかどうかのルールも以前のまま適用されます。</p>
+            </div>
+        </section>
+
+        <!-- 3. Glossary -->
+        <section class="section-card">
+            <div class="section-header">
+                <span class="section-number">03</span>
+                <h2 class="section-h">用語集：この道具は何をするもの？</h2>
+            </div>
+            <div class="road-grid">
+                <div class="road-card" style="border-left: 5px solid #ddd">
+                    <h4>固定電話機</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-light)">「日本語しか話せない職人」</p>
+                    <p style="font-size: 0.85rem;">モジュラー線にしか繋がりません。ネットの言葉は分かりません。</p>
+                </div>
+                <div class="road-card" style="border-left: 5px solid var(--accent)">
+                    <h4>ゲートウェイ</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-light)">「万能の橋渡し役」</p>
+                    <p style="font-size: 0.85rem;">電話線とネットの両方をつなげる今回の主役（HT813など）。</p>
+                </div>
+                <div class="road-card" style="border-left: 5px solid var(--primary)">
+                    <h4>ATA</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-light)">「通訳機（受信専用）」</p>
+                    <p style="font-size: 0.85rem;">電話機をネット通話できるようにする道具。壁の線は繋げません。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Column -->
+        <section class="section-card" style="background: var(--navy); color: #fff;">
+            <div class="section-header" style="border-bottom-color: rgba(255,255,255,0.1)">
+                <span class="section-number" style="color: #fff">04</span>
+                <h2 class="section-h" style="color: #fff">重要：番号の「生まれ」で決まる運命</h2>
+            </div>
+            <div class="road-grid">
+                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 15px;">
+                    <h4 style="color: var(--road-hikari)">🅰️ アナログ生まれ</h4>
+                    <p style="font-size: 0.9rem">ネットを引く前から使っている番号。所有権があなたにあり、Twilioへ自由にお引越し（LNP）可能です。</p>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 1.5rem; border-radius: 15px;">
+                    <h4 style="color: var(--accent)">🅱️ ひかり生まれ</h4>
+                    <p style="font-size: 0.9rem">光回線と同時に取得した番号。「NTTの社宅番号」のようなもので、他社クラウドへの持ち出しは原則できません。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Price -->
+        <section class="section-card" style="margin-top: 4rem;">
+            <div class="section-header">
+                <span class="section-number">06</span>
+                <h2 class="section-h">お金の話：結局どれが一番安いの？</h2>
+            </div>
+            <div class="cost-table-wrapper">
+                <table class="cost-table">
+                    <thead>
+                        <tr>
+                            <th>項目</th>
+                            <th>パターンA(NTT)</th>
+                            <th>パターンB(GATEWAY)</th>
+                            <th>パターンC(引っ越し)</th>
+                            <th>パターンD(新規)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>NTT基本料</td>
+                            <td>約2,750円〜</td>
+                            <td>約2,750円〜</td>
+                            <td><span class="best-pick">0円</span></td>
+                            <td><span class="best-pick">最終的に0円</span></td>
+                        </tr>
+                        <tr>
+                            <td>転送通話料</td>
+                            <td>かかる</td>
+                            <td><span class="best-pick">0円</span></td>
+                            <td><span class="best-pick">0円</span></td>
+                            <td>移行期間のみ</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="logo">
+                <span class="logo-text" style="color: #fff">Locaop Desk</span>
+            </div>
+            <div class="copyright">
+                &copy; 2024 Locaop Desk.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const questions = [
+            {
+                text: "今の電話番号をそのまま使い続けたいですか？",
+                yes: 1,
+                no: "pattern_d"
+            },
+            {
+                text: "その番号はいつ作りましたか？",
+                yes: 2, // Check volume next
+                no: 3, // Hikari born, check volume next
+                btnYes: "ネットを引く前(アナログ)",
+                btnNo: "光回線と同時(ひかり)",
+                unknown: 2
+            },
+            {
+                text: "1日の電話件数はどのくらいですか？",
+                yes: 4, // Manual check volume
+                no: 4,
+                btnYes: "10件以上(多め)",
+                btnNo: "10件未満(少なめ)",
+                unknown: 4
+            },
+            {
+                text: "社内にネットワーク設定ができるスタッフはいますか？",
+                yes: "pattern_b_logic", // Will determine B or A/C in showResult logic
+                no: "pattern_a_logic",
+                btnYes: "いる・自分でできる",
+                btnNo: "いない・任せたい",
+                unknown: "pattern_a_logic"
+            }
+        ];
+
+        // Custom Logic for results based on breadcrumbs
+        function getAdvancedResult(logicType) {
+            // This is a simplified logic mapper
+            if (logicType === 'pattern_b_logic') {
+                // If they have tech staff, Pattern B (Gateway) is a great cost saver
+                return "pattern_b";
+            } else if (logicType === 'pattern_a_logic') {
+                // If no tech staff, Pattern A (NTT Option) or Pattern C (LNP) is easier
+                // Defaulting to Pattern C for simplicity in this demo if they are analog born, 
+                // but let's just return a mapping.
+                return (userAnswers[1] === 'yes') ? 'pattern_c' : 'pattern_a';
+            }
+            return logicType;
+        }
+
+        let currentStep = 0;
+        let userAnswers = {};
+
+        function answer(choice) {
+            const q = questions[currentStep];
+            userAnswers[currentStep] = choice;
+
+            let next;
+            if (choice === 'yes') next = q.yes;
+            else if (choice === 'no') next = q.no;
+            else next = q.unknown;
+
+            // Add simple sparkle effect
+            const btn = event.currentTarget;
+            createSparkles(btn.offsetLeft + btn.offsetWidth / 2, btn.offsetTop + btn.offsetHeight / 2);
+
+            if (typeof next === 'string') {
+                // Determine final pattern based on path if needed
+                let finalPattern = getAdvancedResult(next);
+
+                showResult(finalPattern);
+            } else {
+                currentStep = next;
+                updateQuestion();
+            }
+        }
+
+        function createSparkles(x, y) {
+            const wrap = document.querySelector('.diag-card-wrap');
+            for (let i = 0; i < 10; i++) {
+                const s = document.createElement('div');
+                s.className = 'sparkle fa-solid fa-star';
+                s.style.left = x + 'px';
+                s.style.top = y + 'px';
+                s.style.color = '#FF9F1C';
+                s.style.position = 'absolute';
+                s.style.transform = `translate(${(Math.random() - 0.5) * 200}px, ${(Math.random() - 0.5) * 200}px)`;
+                wrap.appendChild(s);
+                setTimeout(() => s.remove(), 800);
+            }
+        }
+
+        function updateQuestion() {
+            const q = questions[currentStep];
+            const content = document.getElementById('diag-content');
+            content.style.opacity = '0';
+
+            setTimeout(() => {
+                document.getElementById('diag-question').innerText = q.text;
+                const container = document.querySelector('.diag-options'); // Changed to use existing class
+                container.innerHTML = '';
+
+                // Create Yes Button
+                const btnYes = document.createElement('button');
+                btnYes.className = 'diag-btn primary';
+                btnYes.innerText = q.btnYes || "はい";
+                btnYes.onclick = (e) => answer('yes');
+                container.appendChild(btnYes);
+
+                // Create No Button
+                const btnNo = document.createElement('button');
+                btnNo.className = 'diag-btn';
+                btnNo.innerText = q.btnNo || "いいえ";
+                btnNo.onclick = (e) => answer('no');
+                container.appendChild(btnNo);
+
+                // Create Unknown Button if applicable
+                if (q.unknown) {
+                    const btnUnk = document.createElement('button');
+                    btnUnk.className = 'diag-btn unknown';
+                    btnUnk.innerText = "わからない";
+                    btnUnk.onclick = (e) => answer('unknown');
+                    container.appendChild(btnUnk);
+                }
+
+                content.style.opacity = '1';
+                content.className = 'animate__animated animate__fadeInRight';
+            }, 300);
+        }
+
+        function showResult(pattern) {
+            const results = {
+                pattern_a: {
+                    title: "パターンA：NTTオプション活用",
+                    tag: "手軽さ重視",
+                    desc: "機械を買わずに設定のみで解決。一番手軽な方法です！現在お使いの番号を残しつつ、NTTの既存オプションを組み合わせて連携を実現します。（※転送通話料は都度発生します）"
+                },
+                pattern_b: {
+                    title: "パターンB：ゲートウェイ設置",
+                    tag: "通話料0円・玄人向け",
+                    desc: "自宅にゲートウェイを設置する、最も賢い節約プランです！初期費用はかかりますが、ネット経由で受発信するため、毎月の転送費を0円に抑えることができます。"
+                },
+                pattern_c: {
+                    title: "パターンC：ナンバーポータビリティ",
+                    tag: "究極のコストカット",
+                    desc: "おめでとうございます！今の番号をTwilioへ完全に引っ越し可能です。NTTの基本料（月額約2,750円〜）が完全にゼロになり、将来にわたって最安価格で運用できます。"
+                },
+                pattern_d: {
+                    title: "パターンD：新規発番＆移行",
+                    tag: "将来投資プラン",
+                    desc: "ひかり生まれの番号は持ち出せませんが、新しいTwilio番号へ移行するのが最もスマートな解決策です。名刺等を新番号に切り替える半年〜1年後には、NTT基本料0円の理想郷へ辿り着けます。"
+                }
+            };
+
+            const res = results[pattern];
+            document.getElementById('diag-content').style.display = 'none';
+            document.getElementById('diag-result').style.display = 'block';
+            document.getElementById('loading-mask').style.display = 'block';
+
+            setTimeout(() => {
+                document.getElementById('loading-mask').style.display = 'none';
+                const resContent = document.getElementById('result-content');
+                resContent.style.display = 'block';
+                resContent.className = 'animate__animated animate__zoomIn';
+
+                document.getElementById('result-pattern').innerText = res.tag;
+                document.getElementById('result-title').innerText = res.title;
+                document.getElementById('result-desc').innerText = res.desc;
+
+                // Extra flashy result effect
+                document.querySelector('.diag-card-wrap').classList.add('result-shining');
+            }, 1500);
+        }
+
+        function resetDiag() {
+            currentStep = 0;
+            document.getElementById('diag-content').style.display = 'block';
+            document.getElementById('diag-result').style.display = 'none';
+            document.getElementById('result-content').style.display = 'none';
+            document.querySelector('.diag-card-wrap').classList.remove('result-shining');
+            updateQuestion();
+        }
+    </script>
+</body>
+
+</html>
